@@ -16,6 +16,9 @@
 #include <unistd.h> // unsigned int sleep(unsigned int seconds);
 #include <string.h> // size_t strlen(const char *s);
 #include <ctype.h> // int isprint(int c);
+#include "message_parser.h"
+
+
 
 #define LOGFILE stderr
 #define MESSAGE_BUF 513	// one more than limit to add '\0'
@@ -28,6 +31,8 @@
 int main(int argc, char *argv[])
 {
 	// IRC tcp port 6667
+	// "Command-line Arguments" 5.10 K & R p.114	
+
 	
 	int serv_sock_fd, client_sock_fd, client_length, child_pid;
 	struct sockaddr_in client_addr, serv_addr;
@@ -97,10 +102,12 @@ int main(int argc, char *argv[])
 		// Using telnet to connect to irc_server 6667 to test.  Telnet automagically sends \r\n
 		// receive message
 		// ssize_t recv(int sockfd, void *buf, size_t len, int flags);	
-		if((ssize_t bytes_recv = recv(client_sock_fd, recv_buf, MESSAGE_BUF_LIMIT, 0)) == MESSAGE_BUF_LIMIT)
+		ssize_t bytes_recv = recv(client_sock_fd, recv_buf, MESSAGE_BUF_LIMIT, 0);
+		
+		if (bytes_recv == MESSAGE_BUF_LIMIT)
 		{
 		// can buffer be checked to see if it was exceeded
-			if (bytes_recv[MESSAGE_BUF_LIMIT] == '\n' && bytes_recv[MESSAGE_BUF_LIMIT - 1] == '\r')
+			if (recv_buf[MESSAGE_BUF_LIMIT] == '\n' && recv_buf[MESSAGE_BUF_LIMIT - 1] == '\r')
 			{	
 				recv_buf[(int)bytes_recv] = '\0';  //Now message is a string
 				//handle message
@@ -125,10 +132,10 @@ int main(int argc, char *argv[])
 				else
 					printf("\\%x", recv_buf[i]);
 			}
-
+		
 		}
 		// check message
-
+		print_hello();
 		
 		// execute message
 
