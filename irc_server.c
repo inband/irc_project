@@ -17,6 +17,7 @@
 #include <string.h> // size_t strlen(const char *s);
 #include <ctype.h> // int isprint(int c);
 #include "message_parser.h"
+#include "utils.h"
 
 
 
